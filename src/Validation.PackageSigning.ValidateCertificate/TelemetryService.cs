@@ -6,15 +6,15 @@ using NuGet.Services.Validation;
 
 namespace Validation.PackageSigning.ValidateCertificate
 {
-    public class AlertingService : IAlertingService
+    public class TelemetryService : ITelemetryService
     {
-        public void FirePackageSignatureShouldBeInvalidatedAlert(PackageSignature signature)
+        public void TrackPackageSignatureShouldBeInvalidatedEvent(PackageSignature signature)
         {
             // TODO
             throw new NotImplementedException();
         }
 
-        public void FireUnableToValidateCertificateAlert(Certificate certificate)
+        public void TrackUnableToValidateCertificateEvent(Certificate certificate)
         {
             // TODO
             throw new NotImplementedException();

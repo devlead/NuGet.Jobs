@@ -43,11 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlertingService.cs" />
+    <Compile Include="TelemetryService.cs" />
     <Compile Include="CertificateValidationMessageHandler.cs" />
     <Compile Include="CertificateValidationService.cs" />
     <Compile Include="CertificateVerificationResult.cs" />
-    <Compile Include="IAlertingService.cs" />
+    <Compile Include="ITelemetryService.cs" />
     <Compile Include="ICertificateValidationService.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="Program.cs" />

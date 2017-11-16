@@ -155,7 +155,7 @@ namespace Validation.PackageSigning.ValidateCertificate
 
             services.AddTransient<ICertificateStore, CertificateStore>();
             services.AddTransient<ICertificateValidationService, CertificateValidationService>();
-            services.AddTransient<IAlertingService, AlertingService>();
+            services.AddTransient<ITelemetryService, TelemetryService>();
         }
 
         private static IServiceProvider CreateProvider(IServiceCollection services)
