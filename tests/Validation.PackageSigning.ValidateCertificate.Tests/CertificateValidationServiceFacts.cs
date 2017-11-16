@@ -142,8 +142,8 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
 
                 Assert.Equal(PackageSigningStatus.Invalid, signingState.SigningStatus);
 
-                _alertingService.Verify(a => a.FireUnableToValidateCertificateAlert(It.IsAny<Certificate>()), Times.Never);
-                _alertingService.Verify(a => a.FirePackageSignatureShouldBeInvalidatedAlert(It.IsAny<PackageSignature>()), Times.Exactly(2));
+                _telemetryService.Verify(a => a.TrackUnableToValidateCertificateEvent(It.IsAny<Certificate>()), Times.Never);
+                _telemetryService.Verify(a => a.TrackPackageSignatureShouldBeInvalidatedEvent(It.IsAny<PackageSignature>()), Times.Exactly(2));
                 _context.Verify(c => c.SaveChangesAsync(), Times.Once);
             }
 
@@ -218,8 +218,8 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
 
                 Assert.Equal(PackageSigningStatus.Invalid, signingState.SigningStatus);
 
-                _alertingService.Verify(a => a.FireUnableToValidateCertificateAlert(It.IsAny<Certificate>()), Times.Never);
-                _alertingService.Verify(a => a.FirePackageSignatureShouldBeInvalidatedAlert(It.IsAny<PackageSignature>()), Times.Exactly(2));
+                _telemetryService.Verify(a => a.TrackUnableToValidateCertificateEvent(It.IsAny<Certificate>()), Times.Never);
+                _telemetryService.Verify(a => a.TrackPackageSignatureShouldBeInvalidatedEvent(It.IsAny<PackageSignature>()), Times.Exactly(2));
                 _context.Verify(c => c.SaveChangesAsync(), Times.Once);
             }
 
@@ -246,8 +246,8 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
                 Assert.Equal(4, _certificateValidation1.Certificate.ValidationFailures);
                 Assert.Equal(null, _certificateValidation1.Certificate.RevocationTime);
 
-                _alertingService.Verify(a => a.FireUnableToValidateCertificateAlert(It.IsAny<Certificate>()), Times.Never);
-                _alertingService.Verify(a => a.FirePackageSignatureShouldBeInvalidatedAlert(It.IsAny<PackageSignature>()), Times.Never);
+                _telemetryService.Verify(a => a.TrackUnableToValidateCertificateEvent(It.IsAny<Certificate>()), Times.Never);
+                _telemetryService.Verify(a => a.TrackPackageSignatureShouldBeInvalidatedEvent(It.IsAny<PackageSignature>()), Times.Never);
                 _context.Verify(c => c.SaveChangesAsync(), Times.Once);
             }
 
@@ -283,8 +283,8 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
                 Assert.Equal(5, _certificateValidation1.Certificate.ValidationFailures);
                 Assert.Equal(null, _certificateValidation1.Certificate.RevocationTime);
 
-                _alertingService.Verify(a => a.FireUnableToValidateCertificateAlert(It.IsAny<Certificate>()), Times.Once);
-                _alertingService.Verify(a => a.FirePackageSignatureShouldBeInvalidatedAlert(It.IsAny<PackageSignature>()), Times.Never);
+                _telemetryService.Verify(a => a.TrackUnableToValidateCertificateEvent(It.IsAny<Certificate>()), Times.Once);
+                _telemetryService.Verify(a => a.TrackPackageSignatureShouldBeInvalidatedEvent(It.IsAny<PackageSignature>()), Times.Never);
                 _context.Verify(c => c.SaveChangesAsync(), Times.Exactly(2));
             }
         }
@@ -292,7 +292,7 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
         public class FactsBase
         {
             protected readonly Mock<IValidationEntitiesContext> _context;
-            protected readonly Mock<IAlertingService> _alertingService;
+            protected readonly Mock<ITelemetryService> _telemetryService;
 
             protected readonly Certificate _certificate1 = new Certificate
             {
@@ -331,7 +331,7 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
             public FactsBase()
             {
                 _context = new Mock<IValidationEntitiesContext>();
-                _alertingService = new Mock<IAlertingService>();
+                _telemetryService = new Mock<ITelemetryService>();
 
                 var logger = new Mock<ILogger<CertificateValidationService>>();
 
@@ -340,7 +340,7 @@ namespace Validation.PackageSigning.ValidateCertificate.Tests
 
                 _target = new CertificateValidationService(
                     _context.Object,
-                    _alertingService.Object,
+                    _telemetryService.Object,
                     logger.Object,
                     maximumValidationFailures: 5);
             }

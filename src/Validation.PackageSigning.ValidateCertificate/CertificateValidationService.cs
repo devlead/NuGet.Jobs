@@ -19,18 +19,18 @@ namespace Validation.PackageSigning.ValidateCertificate
         private const int MaxSignatureUpdatesPerTransaction = 500;
 
         private readonly IValidationEntitiesContext _context;
-        private readonly IAlertingService _alertingService;
+        private readonly ITelemetryService _telemetryService;
         private readonly ILogger<CertificateValidationService> _logger;
         private readonly int _maximumValidationFailures;
 
         public CertificateValidationService(
             IValidationEntitiesContext context,
-            IAlertingService alertingService,
+            ITelemetryService telemetryService,
             ILogger<CertificateValidationService> logger,
             int maximumValidationFailures)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
-            _alertingService = alertingService ?? throw new ArgumentNullException(nameof(alertingService));
+            _telemetryService = telemetryService ?? throw new ArgumentNullException(nameof(telemetryService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             _maximumValidationFailures = maximumValidationFailures;
@@ -143,7 +143,7 @@ namespace Validation.PackageSigning.ValidateCertificate
                     validation.Certificate.Thumbprint,
                     _maximumValidationFailures);
 
-                _alertingService.FireUnableToValidateCertificateAlert(validation.Certificate);
+                _telemetryService.TrackUnableToValidateCertificateEvent(validation.Certificate);
             }
 
             return _context.SaveChangesAsync();
@@ -160,7 +160,7 @@ namespace Validation.PackageSigning.ValidateCertificate
                         signature.Key,
                         validation.Certificate.Thumbprint);
 
-                    _alertingService.FirePackageSignatureShouldBeInvalidatedAlert(signature);
+                    _telemetryService.TrackPackageSignatureShouldBeInvalidatedEvent(signature);
                 }
 
                 signature.Status = PackageSignatureStatus.Invalid;
@@ -204,7 +204,7 @@ namespace Validation.PackageSigning.ValidateCertificate
                         signature.Key,
                         validation.Certificate.Thumbprint);
 
-                    _alertingService.FirePackageSignatureShouldBeInvalidatedAlert(signature);
+                    _telemetryService.TrackPackageSignatureShouldBeInvalidatedEvent(signature);
                 }
 
                 signature.Status = PackageSignatureStatus.Invalid;
