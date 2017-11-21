@@ -24,6 +24,9 @@ namespace NuGet.Jobs.Validation.PackageSigning.ExtractAndValidateSignature
 {
     public class Job : JobBase
     {
+        private const string ValidationDbConfigurationSectionName = "ValidationDb";
+        private const string ServiceBusConfigurationSectionName = "ServiceBus";
+
         /// <summary>
         /// The configured service provider, used to instiate the services this job depends on.
         /// </summary>
@@ -118,6 +121,9 @@ namespace NuGet.Jobs.Validation.PackageSigning.ExtractAndValidateSignature
 
         private void ConfigureJobServices(IServiceCollection services, IConfigurationRoot configurationRoot)
         {
+            services.Configure<ValidationDbConfiguration>(configurationRoot.GetSection(ValidationDbConfigurationSectionName));
+            services.Configure<ServiceBusConfiguration>(configurationRoot.GetSection(ServiceBusConfigurationSectionName));
+
             services.AddTransient<ISubscriptionProcessor<SignatureValidationMessage>, SubscriptionProcessor<SignatureValidationMessage>>();
 
             services.AddScoped<IValidationEntitiesContext>(p =>
